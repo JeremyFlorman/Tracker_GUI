@@ -1,64 +1,7 @@
-function [codeout] = getCodeout(handles, scale)
+function [codeout] = getCodeout(handles)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-global outputheaders
-global f
-global D
-global n
-global N
-global p
-global e
-global s
-global S
-global l
-global L
-global w
-global W 
-global a
-global A
-global m
-global M
-global k
-global b
-global P
-global c
-global d
-global x
-global y 
-global u
-global v
-global o
-global r
-global t
 
-global f1
-global D1
-global n1
-global N1
-global p1
-global e1
-global s1
-global S1
-global l1
-global L1
-global w1
-global W1
-global a1
-global A1
-global m1
-global M1
-global k1
-global b1
-global P1
-global c1
-global d1
-global x1
-global y1 
-global u1
-global v1
-global o1
-global r1
-global t1
 foldername = get(handles.SelectData, 'UserData');
 specific = get(handles.SpecificTime, 'Value');
 spdwin = '';
@@ -622,19 +565,22 @@ omegacust = get(handles.MeasureOmegas, 'Value');
     elseif omegacust == 0
         omegacustout = '';
     end
+
+    chorePath = handles.ChoreographyPath;
+
 version = get(handles.Version2, 'Value');
     if version == 0
-        home = ['java -Xmx10000m -jar C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\chore.jar ' foldername ' '];
+        home = ['java -Xmx1000m -jar ' chorePath 'chore.jar ' foldername ' '];
     elseif version == 1
-        home = ['java -Xmx10000m -cp C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\scala-library.jar;C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\Chore.jar;C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\IchiMwt.jar;C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\commons-math3-3.1.1.jar Choreography ' foldername ];
+        home = ['java -Xmx1000m -cp ' chorePath 'scala-library.jar;' chorePath 'Chore.jar;' chorePath 'IchiMwt.jar;' chorePath 'commons-math3-3.1.1.jar Choreography ' foldername ];
     end
     
     outputs = [ampplug ' -o ' f D n N p e s S l L w W a A m M k b P c d x y u v o r t amp ];
     outputs = [outputs(1:end-1) customout omegacustout];
-    outputs1 = { 'Time ', f1, D1, n1, N1, p1, e1, s1, S1, l1, L1, w1, W1, a1, A1, m1, M1, k1, b1, P1, c1, d1, x1, y1, u1, v1, o1, r1, t1, amp1};
+    % outputs1 = { 'Time ', f1, D1, n1, N1, p1, e1, s1, S1, l1, L1, w1, W1, a1, A1, m1, M1, k1, b1, P1, c1, d1, x1, y1, u1, v1, o1, r1, t1, amp1};
     misc = [rescaled speedwind dataspace mintime mindistance fwddist lengthunits disptype spec];
     plugins = [shad ' -S' reout resp spinesfwd revoutput extract curvaceousout eigenout omegaout  senseout];
-    urcodeout = ['-S' misc, outputs plugins cust];
+    % urcodeout = ['-S' misc, outputs plugins cust];
     codeout = [home misc outputs plugins cust individualoutputs];
     set(handles.codehome, 'String', codeout);
     clipboard('copy', codeout);

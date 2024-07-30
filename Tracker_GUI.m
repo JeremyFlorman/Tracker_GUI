@@ -55,6 +55,8 @@ function Tracker_GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for Tracker_GUI
 handles.output = hObject;
 
+handles.ChoreographyPath = 'C:\Users\Administrator\Desktop\AlkemaLabSoftware\MWT_Files\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\';
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -75,7 +77,7 @@ function varargout = Tracker_GUI_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = getappdata(hObject, 'NormalizedReversals');%handles.output;
 
-
+%%
 
 function scale_Callback(hObject, eventdata, handles)
 % hObject    handle to text1 (see GCBO)
@@ -707,26 +709,6 @@ function scale_KeyPressFcn(hObject, eventdata, handles)
 
 
 
-% --- Executes on button press in SelectData.
-function SelectData_Callback(hObject, eventdata, handles)
-% hObject    handle to SelectData (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-recentpath = get(hObject, 'UserData');
-global foldername
-if ~ischar(recentpath)
-    startpath = 'C:\Users\MWT\Desktop\Jeremy\';
-elseif ischar(recentpath)
-    uppath = regexp(recentpath, '\', 'split');
-    recentpath = strrep(recentpath, uppath{end}, '');
-    startpath = recentpath;
-end
-
-foldername=uigetdir(startpath, 'wheres ya data chump?');
-
-set(hObject, 'UserData', foldername);
-
 % --- Executes on selection change in RevTrigger.
 function RevTrigger_Callback(hObject, eventdata, handles)
 % hObject    handle to RevTrigger (see GCBO)
@@ -963,8 +945,27 @@ function codehome_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+%%
 
+% --- Executes on button press in SelectData.
+function SelectData_Callback(hObject, eventdata, handles)
+% hObject    handle to SelectData (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 
+recentpath = get(hObject, 'UserData');
+global foldername
+if ~ischar(recentpath)
+    startpath = 'C:\Users\MWT\Desktop\Jeremy\';
+elseif ischar(recentpath)
+    uppath = regexp(recentpath, '\', 'split');
+    recentpath = strrep(recentpath, uppath{end}, '');
+    startpath = recentpath;
+end
+
+foldername=uigetdir(startpath, 'wheres ya data chump?');
+
+set(hObject, 'UserData', foldername);
 
 
 
@@ -1605,11 +1606,14 @@ if omegacust == 1
 elseif omegacust == 0
     omegacustout = '';
 end
+
+chorePath = handles.ChoreographyPath;
+
 version = get(handles.Version2, 'Value');
 if version == 0
-    home = ['java -Xmx1000m -jar C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\chore.jar ' foldername ' '];
+    home = ['java -Xmx1000m -jar ' chorePath 'chore.jar ' foldername ' '];
 elseif version == 1
-    home = ['java -Xmx1000m -cp C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\scala-library.jar;C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\Chore.jar;C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\IchiMwt.jar;C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\commons-math3-3.1.1.jar Choreography ' foldername ];
+    home = ['java -Xmx1000m -cp ' chorePath 'scala-library.jar;' chorePath 'Chore.jar;' chorePath 'IchiMwt.jar;' chorePath 'commons-math3-3.1.1.jar Choreography ' foldername ];
 end
 
 outputs = [ampplug ' -o ' f D n N p e s S l L w W a A m M k b P c d x y u v o r t amp ];
@@ -2616,9 +2620,9 @@ elseif omegacust == 0
 end
 version = get(handles.Version2, 'Value');
 if version == 0
-    home = ['java -Xmx1000m -jar C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\chore.jar '];
+    home = ['java -Xmx1000m -jar ' chorePath 'chore.jar '];
 elseif version == 1
-    home = ['java -Xmx1000m -cp C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\scala-library.jar;C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\Chore.jar;C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\IchiMwt.jar;C:\Users\Jeremy\Desktop\Tools\MWT_latest_1.3.0_r1035\MWT_1.3.0_r1035\analysis\commons-math3-3.1.1.jar Choreography ' ];
+    home = ['java -Xmx1000m -cp ' chorePath 'scala-library.jar;' chorePath 'Chore.jar;' chorePath 'IchiMwt.jar;' chorePath 'commons-math3-3.1.1.jar Choreography ' ];
 end
 
 
@@ -3821,18 +3825,10 @@ function flux_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 foldername = get(handles.SelectData, 'UserData');
 numCircles = str2double(get(handles.numcircles, 'String'));
-window = num2str(get(handles.SpeedWindow, 'String'));
-minlength = num2str(get(handles.MinDistance, 'String'));
-mindur = num2str(get(handles.MinTime, 'String'));
-samplerate = num2str(get(handles.DataSpacing, 'String'));
-outputs = get(handles.outtype, 'String');
-outval = get(handles.outtype, 'Value');
+handles.FluxOutputType = handles.outtype.String(handles.outtype.Value);
 
-output = outputs{outval};
-
-fwdbias = [' --minimum-biased ' num2str(get(handles.FwdBiasDistance, 'String'))];
-
-FluxCode(foldername,numCircles,window,minlength,mindur,samplerate,fwdbias,output)
+FluxCode(foldername,numCircles,handles)
+parseFlux(foldername)
 
 
 function numcircles_Callback(hObject, eventdata, handles)

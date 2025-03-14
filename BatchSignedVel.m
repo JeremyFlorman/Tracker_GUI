@@ -34,7 +34,7 @@ for i=1:size(foldnames,2)
     end
     timeline = data.timeline;
 end
-tl = -300:0.25:300;
+tl = -300:0.25:299.75;
 n = regexp(parentfolder, '\', 'split');
 excelname = [parentfolder '\' n{end} '_Signed+Aligned.xlsx']
 othername = [parentfolder '\' n{end} '_population_mean.xlsx']

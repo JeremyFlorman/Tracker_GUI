@@ -3819,20 +3819,13 @@ function flux_Callback(hObject, eventdata, handles)
 % hObject    handle to flux (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+codein = getCodeout(handles);
 foldername = get(handles.SelectData, 'UserData');
 numCircles = str2double(get(handles.numcircles, 'String'));
-window = num2str(get(handles.SpeedWindow, 'String'));
-minlength = num2str(get(handles.MinDistance, 'String'));
-mindur = num2str(get(handles.MinTime, 'String'));
-samplerate = num2str(get(handles.DataSpacing, 'String'));
-outputs = get(handles.outtype, 'String');
-outval = get(handles.outtype, 'Value');
-
-output = outputs{outval};
-
-fwdbias = [' --minimum-biased ' num2str(get(handles.FwdBiasDistance, 'String'))];
-
-FluxCode(foldername,numCircles,window,minlength,mindur,samplerate,fwdbias,output)
+fluxVal = get(handles.outtype, 'Value');
+fluxStr = get(handles.outtype, 'String');
+fluxFlag = fluxStr{fluxVal};
+FluxCode(codein, foldername,numCircles, fluxFlag);
 
 
 function numcircles_Callback(hObject, eventdata, handles)
